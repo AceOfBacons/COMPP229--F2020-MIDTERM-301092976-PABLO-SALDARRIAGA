@@ -33,35 +33,86 @@ router.get('/add', (req, res, next) => {
 // POST process the Book Details page and create a new Book - CREATE
 router.post('/add', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+
+   // Creating  NEW BOOK
+    let newBook = Book({ // Getting the information from the forms in the body
+      "Title": req.body.Title, 
+      "Description": req.body.Author,
+      "Price": req.body.Price,
+      "Author": req.body.Author,
+      "Genre": req.body.Genre
+  });
+
+  Book.create(newBook, (err, Book) =>{
+      if(err){
+          console.log(err);
+          res.end(err);
+      }
+      else{
+          res.redirect('/books');
+      }
+  });
 
 });
 
 // GET the Book Details page in order to edit an existing Book
 router.get('/:id', (req, res, next) => {
+  let id = req.params.id; // Click on a button and get an id from the database and edit that piece
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  Book.findById(id, (err, bookToEdit) =>{
+      if(err){
+          console.log(err);
+          res.end(err);
+      }
+      else{
+          //show the edit view
+          res.render('book/edit', {title: 'Edit Book'})
+      }
+  });
+
 });
 
 // POST - process the information passed from the details form and update the document
 router.post('/:id', (req, res, next) => {
+  let id = req.params.id;
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+    let updateBook = new Book({
+        "_id": id,
+        "Title": req.body.Title, 
+      "Description": req.body.Author,
+      "Price": req.body.Price,
+      "Author": req.body.Author,
+      "Genre": req.body.Genre
+    });
+
+    Book.updateOne({_id: id}, updateBook, (err) =>{
+        if(err){
+            console.log(err);
+            res.end(err);
+        }
+        else{
+            res.redirect('/books');
+        }
+    });
+
+
 
 });
 
 // GET - process the delete by user id
 router.get('/delete/:id', (req, res, next) => {
+  let id = req.params.id;
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  Book.remove({_id: id}, (err) =>{
+      if(err){
+          console.log(err);
+          res.end(err);
+      }
+      else{
+          res.redirect('/books');
+      }
+  });
+
 });
 
 
