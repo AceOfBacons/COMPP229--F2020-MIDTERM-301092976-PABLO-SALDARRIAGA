@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
 //  GET the Book Details page in order to add a new Book
 router.get('/add', (req, res, next) => {
 
-  res.render('books/add', {title: 'Add Book'});
+  res.render('books/details', {title: 'Add Book', books: ""});
 
 });
 
@@ -35,15 +35,15 @@ router.post('/add', (req, res, next) => {
 
 
    // Creating  NEW BOOK
-    let newBook = Book({ // Getting the information from the forms in the body
+    let newBook = new book({ // Getting the information from the forms in the body
       "Title": req.body.Title, 
-      "Description": req.body.Author,
+      "Description": req.body.Description,
       "Price": req.body.Price,
       "Author": req.body.Author,
       "Genre": req.body.Genre
   });
-
-  Book.create(newBook, (err, Book) =>{
+  console.log(newBook);
+  book.create(newBook, (err, Book) =>{
       if(err){
           console.log(err);
           res.end(err);
@@ -59,14 +59,14 @@ router.post('/add', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   let id = req.params.id; // Click on a button and get an id from the database and edit that piece
 
-  Book.findById(id, (err, bookToEdit) =>{
+  book.findById(id, (err, bookToEdit) =>{
       if(err){
           console.log(err);
           res.end(err);
       }
       else{
           //show the edit view
-          res.render('book/edit', {title: 'Edit Book'})
+          res.render('books/details', {title: 'Edit Book', books: bookToEdit})
       }
   });
 
@@ -76,16 +76,16 @@ router.get('/:id', (req, res, next) => {
 router.post('/:id', (req, res, next) => {
   let id = req.params.id;
 
-    let updateBook = new Book({
+    let updateBook = new book({
         "_id": id,
         "Title": req.body.Title, 
-      "Description": req.body.Author,
+      "Description": req.body.Description,
       "Price": req.body.Price,
       "Author": req.body.Author,
       "Genre": req.body.Genre
     });
 
-    Book.updateOne({_id: id}, updateBook, (err) =>{
+    book.updateOne({_id: id}, updateBook, (err) =>{
         if(err){
             console.log(err);
             res.end(err);
@@ -103,7 +103,7 @@ router.post('/:id', (req, res, next) => {
 router.get('/delete/:id', (req, res, next) => {
   let id = req.params.id;
 
-  Book.remove({_id: id}, (err) =>{
+  book.remove({_id: id}, (err) =>{
       if(err){
           console.log(err);
           res.end(err);
